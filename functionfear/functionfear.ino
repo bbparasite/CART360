@@ -82,8 +82,6 @@ void loop() {
 }
 
 void detection() {
-  //int ldrSensorValue = analogRead(A0);
-
   IMU_ST_ANGLES_DATA stAngles;
   IMU_ST_SENSOR_DATA stGyroRawData;
   IMU_ST_SENSOR_DATA stAccelRawData;
@@ -95,6 +93,7 @@ void detection() {
 
   int zVal = stAccelRawData.s16Z;
   int rollVal = stAngles.fRoll;
+  //int ldrSensorValue = analogRead(A0);
 
   if (hasBeenLifted == false) {
     if (zVal >= threshold) {
@@ -122,6 +121,7 @@ void detection() {
   //     do
   //     {
   //       hasBeenBlided = true
+  //       ldrSensorValue = analogRead(A0);
   //       Serial.println("It's too dark!");
   //     } while (ldrSensorValue >= 600); 
   //   }
