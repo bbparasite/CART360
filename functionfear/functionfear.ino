@@ -6,13 +6,11 @@ bool hasBeenFlippedOnce = false;
 bool hasBeenRotated = false;
 bool hasBeenLifted = false;
 bool isDark = false;
-bool hasSwitchedMood = false;
+bool hasSwitchedMood = true;
 
 long lightTimer = 0;
 
-
-
-
+#define audioSensorPin A5
 
 #include <Waveshare_10Dof-D.h>
 #include <SoftwareSerial.h>
@@ -91,19 +89,23 @@ void setup() {
   // Serial.println(sad);
   // if (!sfx.playTrack((uint8_t)sad)) {
   //   Serial.println("Failed to play track?");
-  //}
+  // }
 
   //Serial.println(mouthLList[0]);
 }
 
 void loop() {
-
+  audioDetection();
    ldrDetection();
   // proxDetection();
-   imuDetection();
+   //imuDetection();
    lcd.setCursor(0,0);
-   lcd.print(moodsChar[4]);
+   lcd.print(moodsChar[mood]);
+   voiceOutput(mood);
     delay(500);
+
+  Serial.print("mood: ");
+  Serial.println(mood);
 }
 
 
@@ -183,7 +185,7 @@ void ldrDetection() {
   // Arbitrary value set for the if statement
   // Most I could get out of the reading was 20 - 28 with current config
 
-  if (ldrSensorValue >= 900) {
+  if (ldrSensorValue >= 500) {
     isDark = true;
     Serial.println("It's too dark!");
   } else {
@@ -206,29 +208,14 @@ void ldrDetection() {
     }
   }
 }
-void micDetection() {
-  int Analog_Input = A5;
-  int Digital_Input = 11;
-}
-    static unsigned long next = millis();
 
-
-// void lcdTextDisplay() {
- 
-//   // if (millis() - next > 500) {
-//   //   next += 500;
-// 	lcd.setCursor(0, 1);
-//    lcd.print(moodsChar[mood]);
-  
-// // }
-// }
 void voiceOutput(int num) {
   uint8_t *moodsVoice[] = { 0,
                             1,
                             2,
                             3,
                             4 };
-  if (!hasSwitchedMood) {
+  if (hasSwitchedMood == false) {
     Serial.print("\nPlaying track #");
     Serial.println(num);
     if (!sfx.playTrack((uint8_t)moodsVoice[num])) {
@@ -237,6 +224,16 @@ void voiceOutput(int num) {
     hasSwitchedMood = true;
   }
 }
-void proxDetection() {
-  Serial.println(digitalRead(13));
+
+void audioDetection()
+{
+  int Analog_Input = A5;
+  int Digital_Input = 11;
+  int audioSensorData = analogRead(Analog_Input);
+  Serial.println(audioSensorData);
+  if (Analog_Input < 100)
+  {
+  //mood++;
+  hasSwitchedMood = true;
+  }
 }
