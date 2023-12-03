@@ -11,11 +11,32 @@ bool hasSwitchedMood = false;
 long lightTimer = 0;
 
 
+
+
+
 #include <Waveshare_10Dof-D.h>
 #include <SoftwareSerial.h>
 #include <LiquidCrystal.h>
 #include "Adafruit_Soundboard.h"
+//#include "functionFearBytes.h"
 
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+
+char *moodsChar[] = {
+    "   Hello! ",
+    " Oh..okay then",
+    "Please let me be",
+    "Stop doing this!",
+    "I TOLD YOU STOP",
+    "I am now fearful!"
+  };
+
+String moodsString[] = { "I am now uneasy!",
+                         "I am now nervous!",
+                         "I am now anxious!",
+                         "I am now disturbed!",
+                         "I am now fearful!" };
 
 // Choose any two pins that can be used with SoftwareSerial to RX & TX
 #define SFX_TX 9
@@ -37,7 +58,6 @@ Adafruit_Soundboard sfx = Adafruit_Soundboard(&ss, NULL, SFX_RST);
 // Adafruit_Soundboard sfx = Adafruit_Soundboard(&Serial1, NULL, SFX_RST);
 
 
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 
 void setup() {
@@ -52,7 +72,8 @@ void setup() {
   ss.begin(9600);
 
   lcd.begin(16, 2);
-  lcd.clear();
+
+
 
   imuInit(&enMotionSensorType, &enPressureType);
   if (IMU_EN_SENSOR_TYPE_ICM20948 == enMotionSensorType) {
@@ -66,82 +87,26 @@ void setup() {
     Serial.println("Pressure sersor NULL");
   }
   delay(200);
-  Serial.print("\nPlaying track #");
-  Serial.println(sad);
-  if (!sfx.playTrack((uint8_t)sad)) {
-    Serial.println("Failed to play track?");
-  }
+  // Serial.print("\nPlaying track #");
+  // Serial.println(sad);
+  // if (!sfx.playTrack((uint8_t)sad)) {
+  //   Serial.println("Failed to play track?");
+  //}
+
+  //Serial.println(mouthLList[0]);
 }
 
 void loop() {
-  //Cases can be reduced down if too similar or too complicated
-  switch (mood) {
-    case 1:
-      //Unease
-      Serial.println("I am now uneasy!");
-      lcdTextDisplay(mood - 1);
-      //Output code goes here
-      //Could add some code that resets the mood back to 0 if left alone long enough
-      delay(500);
-      imuDetection();
-      ldrDetection();
 
-      break;
-    case 2:
-      //Nervous
-      //Output code goes here
-      Serial.println("I am now nervous!");
-      lcdTextDisplay(mood - 1);
-      delay(500);
-      imuDetection();
-      ldrDetection();
-
-
-      break;
-    case 3:
-      //Anxiety
-      //Output code goes here
-      Serial.println("I am now anxious!");
-      lcdTextDisplay(mood - 1);
-
-      //sfx.playTrack("00");
-      delay(500);
-      imuDetection();
-      ldrDetection();
-
-
-      break;
-    case 4:
-      //Disturbed
-      //Output code goes here
-      Serial.println("I am now disturbed!");
-      lcdTextDisplay(mood - 1);
-
-      delay(500);
-      imuDetection();
-      ldrDetection();
-      break;
-    case 5:
-      //Fear
-      Serial.println("I am now fearful!");
-      lcdTextDisplay(mood - 1);
-
-      // Output code goes here
-      //   Once we're at the worst mood possible you cannot return to default break; default : imuDetection(); ldrDetection();
-
-      delay(500);
-
-      break;
-
-    default:
-      imuDetection();
-      ldrDetection();
-
-      delay(500);
-
-      break;
-  }
+   ldrDetection();
+  // proxDetection();
+   imuDetection();
+   lcd.setCursor(0,0);
+   lcd.print(moodsChar[4]);
+    delay(500);
 }
+
+
 
 void imuDetection() {
 
@@ -165,7 +130,7 @@ void imuDetection() {
         zVal = stAccelRawData.s16Z;
         Serial.println("I have been lifted!");
 
-        Serial.println("    Acceleration: Z : ");
+        Serial.println("Accel");
         Serial.print(stAccelRawData.s16Z);
       } while (zVal >= threshold);
     }
@@ -245,17 +210,33 @@ void micDetection() {
   int Analog_Input = A5;
   int Digital_Input = 11;
 }
+    static unsigned long next = millis();
 
 
-void lcdTextDisplay(int num) {
-  char *moods[] = { "I am now uneasy!",
-                    "I am now nervous!",
-                    "I am now anxious!",
-                    "I am now disturbed!",
-                    "I am now fearful!" };
+// void lcdTextDisplay() {
+ 
+//   // if (millis() - next > 500) {
+//   //   next += 500;
+// 	lcd.setCursor(0, 1);
+//    lcd.print(moodsChar[mood]);
+  
+// // }
+// }
+void voiceOutput(int num) {
+  uint8_t *moodsVoice[] = { 0,
+                            1,
+                            2,
+                            3,
+                            4 };
   if (!hasSwitchedMood) {
-    lcd.clear();
-    lcd.print(moods[num]);
+    Serial.print("\nPlaying track #");
+    Serial.println(num);
+    if (!sfx.playTrack((uint8_t)moodsVoice[num])) {
+      Serial.println("Failed to play track?");
+    }
     hasSwitchedMood = true;
   }
+}
+void proxDetection() {
+  Serial.println(digitalRead(13));
 }

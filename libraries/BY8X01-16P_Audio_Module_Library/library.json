@@ -1,0 +1,49 @@
+{
+    "name": "BY8X01-16P-Arduino",
+    "version": "1.0.8",
+    "keywords": "BY8X01-16P, BY8001-16P, BY83001-16P, uart, serial, audio, sound, controller, driver",
+    "description": "Library to control a BY8001-16P or BY83001-16P audio module from an Arduino board.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "NachtRaveVL",
+            "email": "nachtravevl@gmail.com",
+            "url": "https://github.com/NachtRaveVL",
+            "maintainer": true
+        }
+    ],
+    "homepage": "https://github.com/NachtRaveVL/BY8X01-16P-Arduino/",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/NachtRaveVL/BY8X01-16P-Arduino.git"
+    },
+    "examples": [
+        {
+            "name": "SimpleExample",
+            "base": "examples/SimpleExample",
+            "files": ["SimpleExample.ino"]
+        },
+        {
+            "name": "CombinationPlaybackExample",
+            "base": "examples/CombinationPlaybackExample",
+            "files": ["CombinationPlaybackExample.ino"]
+        },
+        {
+            "name": "IndexedPlaybackExample",
+            "base": "examples/IndexedPlaybackExample",
+            "files": ["IndexedPlaybackExample.ino"]
+        },
+        {
+            "name": "SoftwareSerialExample",
+            "base": "examples/SoftwareSerialExample",
+            "files": ["SoftwareSerialExample.ino"]
+        },
+        {
+            "name": "ModuleInfo",
+            "base": "examples/ModuleInfo",
+            "files": ["ModuleInfo.ino"]
+        }
+    ],
+    "frameworks": "arduino",
+    "platforms": "*"
+}
